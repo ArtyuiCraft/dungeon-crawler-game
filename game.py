@@ -70,7 +70,7 @@ f'''{'a game by'.center(COL)}‎
 ''',
 ]
 
-displaylogo = False
+displaylogo = True
 
 def chance(procent: int) -> bool:
     rand = randrange(0,100)
