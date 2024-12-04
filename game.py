@@ -6,8 +6,13 @@ from termcolor import colored
 from time import sleep
 from ansio import ansi_input, application_keypad, mouse_input
 from ansio.input import InputEvent, get_input_event
+import argparse
 
 COL, ROW = get_terminal_size()
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-S', '--skip', help = 'Skip the text animation', action = 'store_true')
+args = parser.parse_args()
 
 quotes:list[str] = ['the random game dev','(not a very good coder)','why are you reading this','beep boop bap','10101110010001000100101001']
 logo = [
@@ -70,14 +75,11 @@ f'''{'a game by'.center(COL)}‎
 ''',
 ]
 
-displaylogo = True
+displaylogo = not args.skip
 
 def chance(procent: int) -> bool:
     rand = randrange(0,100)
-    if rand <= procent:
-        return True
-    else:
-        return False
+    return rand <= procent 
 
 def clear() -> None:
     if name == 'nt':
@@ -252,7 +254,7 @@ underplayer = Floor()
 with ansi_input, application_keypad, mouse_input:
     while True:
         event: InputEvent = get_input_event()
-        if event.shortcut in ('up','down','left','right'):
+        if event.shortcut in ('up','down','left','right','q'):
             room.add_object(player.x,player.y,underplayer)
             match event.shortcut:
                 case 'up':
@@ -263,6 +265,8 @@ with ansi_input, application_keypad, mouse_input:
                     player.x -= 1
                 case 'right':
                     player.x += 1
+                case 'q':
+                    break
             underplayer = room.room.get(player.x,player.y)
             room.add_object(player.x,player.y,player)
         if player.x == room.room.x | player.y == room.room.y:
